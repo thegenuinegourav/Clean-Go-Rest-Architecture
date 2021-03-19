@@ -5,6 +5,7 @@ type IBookService interface{
 	GetBooksService() (*[]Book, error)
 	PostBookService(book *Book) (*Book, error)
 	UpdateBookService(id int, book *Book) (*Book, error)
+	DeleteBookService(id int) error
 }
 
 type BookService struct {
@@ -31,4 +32,12 @@ func (bookService *BookService) UpdateBookService(id int, book *Book) (*Book, er
 	res.Members = book.Members
 	res.User = book.User
 	return bookService.UpdateBook(res)
+}
+
+func (bookService *BookService) DeleteBookService(id int) error {
+	res, err := bookService.GetBookById(id)
+	if err != nil {
+		return err
+	}
+	return bookService.DeleteBook(res)
 }

@@ -77,8 +77,33 @@ func (bookController *BookController) PutBook(w http.ResponseWriter, r *http.Req
 	defer r.Body.Close()
 	res, err := bookController.UpdateBookService(id, &b)
 	if err != nil {
-		bookController.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		switch err {
+		case sql.ErrNoRows:
+			bookController.RespondWithError(w, http.StatusNotFound, "Book not found")
+		default:
+			bookController.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
 		return
 	}
 	bookController.RespondWithJSON(w, http.StatusOK, res)
+}
+
+func (bookController *BookController) DeleteBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		bookController.RespondWithError(w, http.StatusBadRequest, "Invalid book ID")
+		return
+	}
+	err = bookController.DeleteBookService(id)
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			bookController.RespondWithError(w, http.StatusNotFound, "Book not found")
+		default:
+			bookController.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+	bookController.RespondWithJSON(w, http.StatusOK, map[string]string{"result" : "success"})
 }

@@ -41,4 +41,5 @@ func InitBookRoutes(r *mux.Router, bookController *Book.BookController) {
 	r.HandleFunc("/book",bookController.GetBooks).Methods("GET")
 	r.HandleFunc("/book",bookController.PostBook).Methods("POST")
 	r.HandleFunc("/book/{id}",bookController.PutBook).Methods("PUT")
+	r.HandleFunc("/book/{id}",bookController.DeleteBook).Methods("DELETE")
 }

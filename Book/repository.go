@@ -9,6 +9,7 @@ type IBookRepository interface{
 	GetAllBooks() (*[]Book, error)
 	CreateBook(book *Book) (*Book, error)
 	UpdateBook(book *Book) (*Book, error)
+	DeleteBook(book *Book) error
 }
 
 type BookRepository struct {
@@ -35,6 +36,11 @@ func (bookRepository *BookRepository) CreateBook(book *Book) (*Book, error) {
 func (bookRepository *BookRepository) UpdateBook(book *Book) (*Book, error) {
 	result := bookRepository.DB.Save(book)
 	return book, result.Error
+}
+
+func (bookRepository *BookRepository) DeleteBook(book *Book) error {
+	result := bookRepository.DB.Delete(book)
+	return result.Error
 }
 
 
